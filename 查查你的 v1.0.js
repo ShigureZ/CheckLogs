@@ -23,7 +23,7 @@ function checkLogs(name, area) {
                     resolve(`${name}${area}无零式记录`)
                 }
                 const avg = Math.round(_avg(resp) * 10) / 10
-                resolve(`${name}${area}${parseInt(avg)}`)
+                resolve(`${name}${area}${avg}`)
             })
         })
     })
