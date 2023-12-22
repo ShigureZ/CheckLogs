@@ -11,9 +11,10 @@ function checkLogs(name, area) {
         })
         // 计算平均分
         const result = param.reduce((acc, current) => {
-            return acc += current.percentile
+            return acc += Number(current.percentile)
         }, 0);
-        return result / param.length
+        const avg = result / (param.length || 1)
+        return avg
     }
     return new Promise(resolve => {
         fetch(url).then(r => {
@@ -21,7 +22,7 @@ function checkLogs(name, area) {
                 if (resp.error) {
                     resolve(`${name}${area}无零式记录`)
                 }
-                const avg = _avg(resp)
+                const avg = Math.round(_avg(resp) * 10) / 10
                 resolve(`${name}${area}${parseInt(avg)}`)
             })
         })
@@ -66,6 +67,8 @@ const getServer = (str) => {
         if (serverStr.includes(serverDir[i])) {
             server = serverDir[i]
             name = str.replace(server, '')
+        } else {
+            name = str
         }
     }
     return [name, server]
@@ -96,7 +99,7 @@ if (new URLSearchParams(location.search).get("alerts") !== "0" && !/raidboss_tim
         triggers: [
             {
                 id: "查查你的",
-                // type: "GameLog",
+                type: "GameLog",
                 regex: /\[.*\] ChatLog (00:\d{4})::(.+?)加入了小队。/,
                 // netRegex: NetRegexes.startsUsing({ id: "加入了小队" }),
                 // condition: (data) => {
