@@ -5,15 +5,27 @@ function checkLogs(name, area) {
         if (typeof param === 'string') {
             param = JSON.parse(param)
         }
-        // 过滤普通难度
-        param = param.filter(e => {
-            return e.difficulty !== 100
-        })
+        
+        // 过滤难度为100的日志并进行分组
+        const groupedData = param.reduce((groups, item) => {
+            if (item.difficulty !== 100) {
+                const group = groups[item.encounterID] || [];
+                group.push(item);
+                groups[item.encounterID] = group;
+            }
+            return groups;
+        }, {});
+
+        // 获取每个分组中最大 percentile 的项
+        const result = Object.values(groupedData).map(group => {
+            const maxPercentileItem = group.reduce((maxItem, currentItem) => {
+                return currentItem.percentile > maxItem.percentile ? currentItem : maxItem;
+            }, { percentile: -1 });
+            return maxPercentileItem;
+        });
+
         // 计算平均分
-        const result = param.reduce((acc, current) => {
-            return acc += Number(current.percentile)
-        }, 0);
-        const avg = result / (param.length || 1)
+        const avg = result.reduce((acc, current) => acc + Number(current.percentile), 0) / Math.max(result.length, 1);
         return avg
     }
     return new Promise(resolve => {
