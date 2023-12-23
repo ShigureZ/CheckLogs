@@ -135,7 +135,7 @@ const getServer = (str) => {
 const tts = (t) => callOverlayHandler({ call: "cactbotSay", text: t })
 
 if (new URLSearchParams(location.search).get("alerts") !== "0" && !/raidboss_timeline_only/.test(location.href)) {
-    console.log("查查你的 v1.0.0 已加载");
+    console.log("查查你的 v1.1 已加载");
     Options.Triggers.push({
         id: "查查你的",
         zoneId: ZoneId.MatchAll,
